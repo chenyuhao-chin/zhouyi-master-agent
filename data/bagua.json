@@ -1,0 +1,249 @@
+{
+  "八卦基础": {
+    "说明": "八卦由伏羲所画，三爻成卦，代表天地万物八种基本属性",
+    "来源": "《周易·说卦传》"
+  },
+  "trigrams": [
+    {
+      "id": 1,
+      "name": "乾",
+      "symbol": "☰",
+      "unicode": "U+2630",
+      "yao": "111",
+      "nature": "阳",
+      "element": "金",
+      "direction": "西北",
+      "season": "秋末冬初",
+      "heavenly_stem": "壬癸",
+      "number": {
+        "xi_tian": 1,
+        "hou_tian": 6,
+        "meihua": 1
+      },
+      "image": {
+        "heaven": "天",
+        "nature": "天",
+        "animal": "马",
+        "body": "头",
+        "family": "父",
+        "health": "骨、肺"
+      },
+      "attribute": "健",
+      "quality": "刚健、进取、创始",
+      "description": "乾为天，纯阳之卦。天行健，君子以自强不息。乾卦象征刚健、进取、领导力。"
+    },
+    {
+      "id": 2,
+      "name": "兑",
+      "symbol": "☱",
+      "unicode": "U+2631",
+      "yao": "110",
+      "nature": "阳",
+      "element": "金",
+      "direction": "西",
+      "season": "秋",
+      "heavenly_stem": "庚辛",
+      "number": {
+        "xi_tian": 2,
+        "hou_tian": 7,
+        "meihua": 2
+      },
+      "image": {
+        "heaven": "泽",
+        "nature": "泽",
+        "animal": "羊",
+        "body": "口",
+        "family": "少女",
+        "health": "口、肺"
+      },
+      "attribute": "悦",
+      "quality": "喜悦、柔和、口舌",
+      "description": "兑为泽，一阴居上，二阳在下。兑卦象征喜悦、口才、交流。"
+    },
+    {
+      "id": 3,
+      "name": "离",
+      "symbol": "☲",
+      "unicode": "U+2632",
+      "yao": "101",
+      "nature": "阴",
+      "element": "火",
+      "direction": "南",
+      "season": "夏",
+      "heavenly_stem": "丙丁",
+      "number": {
+        "xi_tian": 3,
+        "hou_tian": 3,
+        "meihua": 3
+      },
+      "image": {
+        "heaven": "火",
+        "nature": "火",
+        "animal": "雉（野鸡）",
+        "body": "目",
+        "family": "中女",
+        "health": "眼、心脏"
+      },
+      "attribute": "丽",
+      "quality": "光明、美丽、文明",
+      "description": "离为火，外刚内柔。离卦象征光明、文化、美丽。依附他物而发光。"
+    },
+    {
+      "id": 4,
+      "name": "震",
+      "symbol": "☳",
+      "unicode": "U+2633",
+      "yao": "001",
+      "nature": "阳",
+      "element": "木",
+      "direction": "东",
+      "season": "春",
+      "heavenly_stem": "甲乙",
+      "number": {
+        "xi_tian": 4,
+        "hou_tian": 3,
+        "meihua": 4
+      },
+      "image": {
+        "heaven": "雷",
+        "nature": "雷",
+        "animal": "龙",
+        "body": "足",
+        "family": "长男",
+        "health": "肝、足"
+      },
+      "attribute": "动",
+      "quality": "震动、奋起、惊恐",
+      "description": "震为雷，一阳动于二阴之下。震卦象征震动、奋发、警醒。"
+    },
+    {
+      "id": 5,
+      "name": "巽",
+      "symbol": "☴",
+      "unicode": "U+2634",
+      "yao": "011",
+      "nature": "阴",
+      "element": "木",
+      "direction": "东南",
+      "season": "春夏之交",
+      "heavenly_stem": "甲乙",
+      "number": {
+        "xi_tian": 5,
+        "hou_tian": 4,
+        "meihua": 5
+      },
+      "image": {
+        "heaven": "风",
+        "nature": "风",
+        "animal": "鸡",
+        "body": "股（大腿）",
+        "family": "长女",
+        "health": "大腿、肝胆"
+      },
+      "attribute": "入",
+      "quality": "顺从、进入、渗透",
+      "description": "巽为风，一阴伏于二阳之下。巽卦象征顺从、柔和、无孔不入。"
+    },
+    {
+      "id": 6,
+      "name": "坎",
+      "symbol": "☵",
+      "unicode": "U+2635",
+      "yao": "010",
+      "nature": "阴",
+      "element": "水",
+      "direction": "北",
+      "season": "冬",
+      "heavenly_stem": "壬癸",
+      "number": {
+        "xi_tian": 6,
+        "hou_tian": 1,
+        "meihua": 6
+      },
+      "image": {
+        "heaven": "水",
+        "nature": "水",
+        "animal": "猪",
+        "body": "耳",
+        "family": "中男",
+        "health": "肾、耳"
+      },
+      "attribute": "陷",
+      "quality": "险陷、隐伏、智慧",
+      "description": "坎为水，一阳陷于二阴之中。坎卦象征险难、智慧、流动。"
+    },
+    {
+      "id": 7,
+      "name": "艮",
+      "symbol": "☶",
+      "unicode": "U+2636",
+      "yao": "100",
+      "nature": "阳",
+      "element": "土",
+      "direction": "东北",
+      "season": "冬春之交",
+      "heavenly_stem": "戊己",
+      "number": {
+        "xi_tian": 7,
+        "hou_tian": 8,
+        "meihua": 7
+      },
+      "image": {
+        "heaven": "山",
+        "nature": "山",
+        "animal": "狗",
+        "body": "手",
+        "family": "少男",
+        "health": "背、脾胃"
+      },
+      "attribute": "止",
+      "quality": "停止、稳定、阻隔",
+      "description": "艮为山，一阳止于二阴之上。艮卦象征停止、稳定、固守。"
+    },
+    {
+      "id": 8,
+      "name": "坤",
+      "symbol": "☷",
+      "unicode": "U+2637",
+      "yao": "000",
+      "nature": "阴",
+      "element": "土",
+      "direction": "西南",
+      "season": "夏秋之交",
+      "heavenly_stem": "戊己",
+      "number": {
+        "xi_tian": 8,
+        "hou_tian": 2,
+        "meihua": 0
+      },
+      "image": {
+        "heaven": "地",
+        "nature": "地",
+        "animal": "牛",
+        "body": "腹",
+        "family": "母",
+        "health": "脾胃"
+      },
+      "attribute": "顺",
+      "quality": "柔顺、承载、包容",
+      "description": "坤为地，纯阴之卦。地势坤，君子以厚德载物。坤卦象征柔顺、包容、承载。"
+    }
+  ],
+  "五行八卦对应": {
+    "金": ["乾", "兑"],
+    "木": ["震", "巽"],
+    "水": ["坎"],
+    "火": ["离"],
+    "土": ["坤", "艮"]
+  },
+  "先天八卦数": {
+    "说明": "邵雍先天八卦数，用于梅花易数起卦",
+    "乾": 1, "兑": 2, "离": 3, "震": 4,
+    "巽": 5, "坎": 6, "艮": 7, "坤": 8
+  },
+  "后天八卦数": {
+    "说明": "文王后天八卦数",
+    "坎": 1, "坤": 2, "震": 3, "巽": 4,
+    "中": 5, "乾": 6, "兑": 7, "艮": 8, "离": 9
+  }
+}

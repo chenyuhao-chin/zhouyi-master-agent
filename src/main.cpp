@@ -185,6 +185,9 @@ int main(int argc, char* argv[]) {
         std::cerr << "[Main] Warning: Knowledge base partially loaded" << std::endl;
     }
     
+    // 加载 LobeHub 格式知识库
+    kb.LoadLobeHubKnowledge("knowledge_sources");
+    
     // 初始化会话管理器
     SessionManager session_mgr(db, llm, kb);
     
@@ -344,6 +347,80 @@ int main(int argc, char* argv[]) {
         }
         bool ok = session_mgr.DeleteSession(session_id);
         resp.SetJson(std::string("{\"success\":") + (ok ? "true" : "false") + "}");
+    });
+    
+    // ==================== 知识管理 API ====================
+    
+    // GET /api/knowledge/docs - 获取知识文档列表
+    server.Get("/api/knowledge/docs", [&kb](const HttpRequest& req, HttpResponse& resp) {
+        auto doc_names = kb.GetKnowledgeDocNames();
+        std::ostringstream json;
+        json << "{\"docs\":[";
+        for (size_t i = 0; i < doc_names.size(); i++) {
+            if (i > 0) json << ",";
+            json << "\"" << JsonBuilder::Escape(doc_names[i]) << "\"";
+        }
+        json << "],\"count\":" << doc_names.size() << "}";
+        resp.SetJson(json.str());
+    });
+    
+    // URL解码
+    auto url_decode = [](const std::string& str) -> std::string {
+        std::string result;
+        for (size_t i = 0; i < str.size(); i++) {
+            if (str[i] == '%' && i + 2 < str.size()) {
+                int val = 0;
+                for (int j = 1; j <= 2; j++) {
+                    char c = str[i + j];
+                    val <<= 4;
+                    if (c >= '0' && c <= '9') val |= (c - '0');
+                    else if (c >= 'A' && c <= 'F') val |= (c - 'A' + 10);
+                    else if (c >= 'a' && c <= 'f') val |= (c - 'a' + 10);
+                }
+                result += static_cast<char>(val);
+                i += 2;
+            } else if (str[i] == '+') {
+                result += ' ';
+            } else {
+                result += str[i];
+            }
+        }
+        return result;
+    };
+
+    // GET /api/knowledge/search?q=xxx - 搜索相关知识文档
+    server.Get("/api/knowledge/search", [&kb, &url_decode](const HttpRequest& req, HttpResponse& resp) {
+        auto it = req.query_params.find("q");
+        if (it == req.query_params.end() || it->second.empty()) {
+            resp.SetStatus(400, "Bad Request");
+            resp.SetJson("{\"error\":\"q parameter is required\"}");
+            return;
+        }
+        std::string query = url_decode(it->second);
+        std::string result = kb.RetrieveRelevantDocs(query);
+        std::ostringstream json;
+        json << "{\"query\":\"" << JsonBuilder::Escape(query) << "\",";
+        json << "\"result\":\"" << JsonBuilder::Escape(result) << "\"}";
+        resp.SetJson(json.str());
+    });
+    
+    // GET /api/knowledge/agent - 获取智能体配置
+    server.Get("/api/knowledge/agent", [&kb](const HttpRequest& req, HttpResponse& resp) {
+        std::string config = kb.GetAgentConfigRaw();
+        if (config.empty()) {
+            resp.SetJson("{\"error\":\"Agent config not loaded\"}");
+        } else {
+            resp.SetJson(config);
+        }
+    });
+    
+    // GET /api/knowledge/all - 获取所有知识文档内容
+    server.Get("/api/knowledge/all", [&kb](const HttpRequest& req, HttpResponse& resp) {
+        std::string all_docs = kb.GetAllKnowledgeDocs();
+        std::ostringstream json;
+        json << "{\"content\":\"" << JsonBuilder::Escape(all_docs) << "\",";
+        json << "\"doc_count\":" << kb.GetKnowledgeDocNames().size() << "}";
+        resp.SetJson(json.str());
     });
     
     // GET /api/gua/random - 随机起卦（不调用LLM，纯本地）

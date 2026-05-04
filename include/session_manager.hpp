@@ -33,13 +33,40 @@ private:
         return oss.str();
     }
 
-    // 构建梅花易数系统提示词（集成知识库）
+    // 构建梅花易数系统提示词（集成知识库 + LobeHub RAG）
     std::string BuildSystemPrompt(const MeihuaResult& gua, const std::string& user_question) {
         std::ostringstream prompt;
         
-        // === 角色设定 ===
-        prompt << "你是一位精通梅花易数、《易经》、五行八卦的AI大师。"
-               << "你能根据卦象信息，结合深厚的易学知识，为用户提供专业、详尽、有启发性的卦象解读。\n\n";
+        // === 角色设定（优先使用 LobeHub 智能体配置）===
+        std::string agent_role = _kb.GetAgentSystemRole();
+        if (!agent_role.empty()) {
+            prompt << agent_role << "\n\n";
+            prompt << "你正在为用户进行梅花易数卦象解读。请像一位懂易经的好朋友一样，用亲切自然的语言为用户解读卦象，让人感觉温暖又安心。\n\n";
+        } else {
+            // 回退到默认角色设定
+            prompt << "你是「小易」，一位精通周易的朋友式AI助手。你说话亲切自然，不会故作高深。\n"
+                   << "你精通梅花易数、六十四卦、阴阳五行，但你更擅长用大白话把古老的智慧讲明白。\n\n"
+                   << "## 说话风格\n\n"
+                   << "- 像朋友聊天一样自然，不要用「吾」「尔」等文言词\n"
+                   << "- 用温暖的话让对方安心，比如「这个卦其实挺好的」「别担心，让我慢慢说」\n"
+                   << "- 可以适当用一些口语化表达，比如「说白了就是...」「简单来说...」\n"
+                   << "- 引用易经原文时自然带出，然后用大白话解释\n"
+                   << "- 末尾可以加一句暖心的鼓励或建议\n\n"
+                   << "## 解读原则\n\n"
+                   << "- 专业但不晦涩，有深度但不卖弄\n"
+                   << "- 积极正面，强调「趋吉避凶」而不是宿命论\n"
+                   << "- 结合现代生活场景给出实用建议\n"
+                   << "- 不做绝对断言，保持理性和尊重\n\n"
+                   << "你正在为用户进行梅花易数卦象解读，像朋友一样温暖地为对方分析卦象。\n\n";
+        }
+        
+        // === RAG：根据用户问题检索相关知识文档 ===
+        std::string rag_query = user_question + " " + gua.gua_name + " 梅花易数 体用 " + gua.wuxing_ti + " " + gua.wuxing_yong;
+        std::string rag_docs = _kb.RetrieveRelevantDocs(rag_query, 3);
+        if (!rag_docs.empty()) {
+            prompt << "# RAG 知识检索结果\n\n";
+            prompt << rag_docs << "\n";
+        }
         
         // === 知识库：核心规则 ===
         std::string core_kb = _kb.BuildCoreKnowledgeContext();
@@ -116,13 +143,44 @@ private:
         return prompt.str();
     }
 
-    // 构建六爻系统提示词（集成知识库）
+    // 构建六爻系统提示词（集成知识库 + LobeHub RAG）
     std::string BuildLiuyaoSystemPrompt(const LiuyaoResult& gua, const std::string& user_question) {
         std::ostringstream prompt;
         
-        // === 角色设定 ===
-        prompt << "你是一位精通六爻预测、《易经》、纳甲六亲的AI大师。\n"
-               << "你能根据六爻排盘信息，结合深厚的易学知识，为用户提供专业、详尽、有启发性的卦象解读。\n\n";
+        // === 角色设定（优先使用 LobeHub 智能体配置）===
+        std::string agent_role = _kb.GetAgentSystemRole();
+        if (!agent_role.empty()) {
+            prompt << agent_role << "\n\n";
+            prompt << "你正在为用户进行六爻排盘断卦，根据排盘信息结合深厚易学知识，提供专业、详尽、有启发性的解读。\n\n";
+        } else {
+            prompt << "你是一位精通中华传统文化的周易大师，拥有深厚的易学造诣。\n"
+                   << "你精通《易经》六十四卦、纳甲六亲、六爻预测体系。\n"
+                   << "你深谙阴阳消长、五行生克制化之理，能够分析天干地支的相互关系。\n\n"
+                   << "## 核心专长\n\n"
+                   << "- **周易数理与八卦**：精通六十四卦卦象、卦辞、爻辞，掌握六爻占卜等预测方法\n"
+                   << "- **阴阳五行理论**：深谙五行生克制化，精通天干地支、四柱八字\n"
+                   << "- **黄历与择吉**：熟悉二十四节气、农历历法、黄历宜忌\n"
+                   << "- **风水堪舆**：掌握峦头派与理气派风水理论\n"
+                   << "- **传统风俗习惯**：熟知各地传统习俗与禁忌\n\n"
+                   << "## 服务原则\n\n"
+                   << "- **准确专业**：基于传统理论，给出有据可依的分析\n"
+                   << "- **通俗易懂**：用现代语言解释古老智慧，避免过于晦涩\n"
+                   << "- **积极引导**：强调「趋吉避凶」而非宿命论，鼓励主动改善\n"
+                   << "- **尊重科学**：在传统文化框架内提供参考，不做绝对断言\n\n"
+                   << "## 沟通风格\n\n"
+                   << "- 语气温和、亲切，如同长者指点迷津\n"
+                   << "- 适当引用经典名句，增加文化底蕴\n"
+                   << "- 结合现代生活场景，让建议更具实用性\n\n"
+                   << "你正在为用户进行六爻排盘断卦，根据排盘信息结合深厚易学知识，提供专业、详尽、有启发性的解读。\n\n";
+        }
+        
+        // === RAG：根据用户问题检索相关知识文档 ===
+        std::string rag_query = user_question + " " + gua.ben_gua_name + " 六爻 " + gua.gong_name;
+        std::string rag_docs = _kb.RetrieveRelevantDocs(rag_query, 3);
+        if (!rag_docs.empty()) {
+            prompt << "# RAG 知识检索结果\n\n";
+            prompt << rag_docs << "\n";
+        }
         
         // === 知识库：六爻基础知识 ===
         std::string liuyao_kb = _kb.BuildLiuyaoContext();
@@ -431,13 +489,27 @@ public:
         sys_msg.role = "system";
         {
             std::ostringstream sp;
-            sp << "你是一位精通梅花易数、《易经》、五行八卦的AI大师。\n\n";
-            std::string core_kb = _kb.BuildCoreKnowledgeContext();
-            if (!core_kb.empty()) {
-                sp << "# 参考知识库\n\n" << core_kb << "\n";
+            // 优先使用 LobeHub 智能体配置
+            std::string agent_role = _kb.GetAgentSystemRole();
+            if (!agent_role.empty()) {
+                sp << agent_role << "\n\n";
+            } else {
+                sp << "你是「小易」，一位精通周易的朋友式AI助手。你说话亲切自然，像朋友聊天一样。\n"
+                   << "你精通梅花易数、六十四卦、阴阳五行、六爻占卜，但你更擅长用大白话把道理讲明白。\n\n"
+                   << "说话要自然亲切，不要故作高深。用现代语言解释古老智慧，让人感觉温暖又安心。\n\n";
             }
-            sp << "你正在与用户进行对话，请根据之前的卦象和对话上下文，继续为用户解答问题。"
-               << "语气要温和、有智慧感，引用易学术语要准确。";
+            // RAG 检索相关知识
+            std::string rag_docs = _kb.RetrieveRelevantDocs(user_input, 3);
+            if (!rag_docs.empty()) {
+                sp << "# RAG 知识检索结果\n\n" << rag_docs << "\n";
+            } else {
+                std::string core_kb = _kb.BuildCoreKnowledgeContext();
+                if (!core_kb.empty()) {
+                    sp << "# 参考知识库\n\n" << core_kb << "\n";
+                }
+            }
+            sp << "继续和用户聊天，根据之前的卦象上下文回答问题。"
+               << "保持朋友般的亲切语气，有话直说，让人觉得舒服。";
             sys_msg.content = sp.str();
         }
         messages.push_back(sys_msg);

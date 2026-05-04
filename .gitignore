@@ -1,8 +1,11 @@
 build/
 *.db
+*.db-shm
+*.db-wal
 *.o
 *.out
 .vscode/
 .idea/
 cmake-build-*/
 config.json
+wwwroot/index.html.bak
